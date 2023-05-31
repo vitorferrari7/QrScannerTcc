@@ -10,6 +10,10 @@ import { ScannerQRCodeResult,ScannerQRCodeSelectedFiles, ScannerQRCodeSymbolType
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'angular-qrscanner';
   public qrCodeResult: any[] = [];
+  public showCameraSection = false;
+  public toggleCameraSection() {
+    this.showCameraSection = !this.showCameraSection; // Alterna o valor da propriedade showCameraSection entre true e false
+  }
   public config: ScannerQRCodeConfig = {
     fps: 100,
     isBeep: false,
@@ -33,6 +37,15 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.startScanner();
+    setTimeout(() => {
+      const qrCodeLink = document.querySelector('#qrCodeLink');
+      if (qrCodeLink) {
+        const href = qrCodeLink.getAttribute('href');
+        if (href) {
+          window.location.href = href;
+        }
+      }
+    });
   }
 
   public onSelects(files: any) {
@@ -65,17 +78,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.qrCodeResult.push(result);
     this.cdr.detectChanges();
   }
-  confirmNavigation(event: MouseEvent) {
-    const confirmed = window.confirm('Deseja ir para o link?');
-    if (!confirmed) {
-      event.preventDefault(); // Impede a navegação padrão se o usuário não confirmar
-    }
-  }
 }
-
-
-
-
-
 
 

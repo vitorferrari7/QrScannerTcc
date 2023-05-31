@@ -48,6 +48,39 @@
   background-color: #555;
 }
 
+.header {
+  background-color: gray;
+  padding: 10px;
+}
+
+.file-input {
+  width: 135px; /* Defina a largura desejada */
+  height: 36px; /* Defina a altura desejada */
+  border: none;
+  border-radius: 1px;
+  background-color: rgb(68, 68, 68);
+  padding: 6px 10px;
+  font-size: 30px;
+  color: black;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.file-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgb(0, 0, 0); /* Defina um estilo de foco desejado */
+}
+.camera-button {
+  background-color: #3b3b3b;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
   footer {
     margin-top: 8px;
     display: flex;
@@ -61,33 +94,38 @@
   }
 
 </style>
+<div class = "header">
+   <div class = "file-input">
+<input #file type="file" (change)="onSelects(file.files)" [multiple]="'multiple'" [accept]="'.jpg, .png, .gif, .jpeg'"/>
+</div>
+<button class ="camera-button" (click)="toggleCameraSection()">{{ showCameraSection ? 'Ocultar Câmera' : 'Ler por Câmera' }}</button>
+</div> 
 
 <div class="content" role="main">
-  <!-- For select files -->
-  <input #file type="file" (change)="onSelects(file.files)" [multiple]="'multiple'" [accept]="'.jpg, .png, .gif, .jpeg'"/>
-
-  <div *ngFor="let item of qrCodeResult" class="result-container" >
+  <div *ngFor="let item of qrCodeResult" class="result-container">
     <img [src]="item.url | safe" [alt]="item.name" style="max-width: 100%">
-    <a [href]="item.data[0].value" target="_blank"(click)="confirmNavigation($event)">{{ item.data[0].value }}</a>
+    <a [href]="item.data[0].value" target="_blank" id="qrCodeLink">{{ item.data[0].value }}</a>
     <button (click)="isStart ? stopScanner() : startScanner()">
       {{ isStart ? 'Stop Scanner' : 'Start Scanner' }}
     </button>
   </div>
 
+
+  <div class="camera-section" *ngIf="showCameraSection">
  <!-- For camera -->
   <ngx-scanner-qrcode #scannerInstance></ngx-scanner-qrcode>
   
 <!--Result-->
 <div *ngIf="scannerInstance.data && scannerInstance.data.getValue().length > 0">
-  <a [href]="scannerInstance.data.getValue()[0].value" target="_blank" class="result-link" (click)="confirmNavigation($event)">
+  <a [href]="scannerInstance.data.getValue()[0].value" target="_blank" class="result-link">
    <span> {{ scannerInstance.data.getValue()[0].value | json }} </span>
   </a>
 </div>
-
   <!-- Loading -->
   <p *ngIf="scannerInstance.isLoading">⌛ Iniciando Câmera...</p>
   <!-- start -->
-  <button (click)="scannerInstance.isStart ? stopScanner() : startScanner()">{{ scannerInstance.isStart ? 'Stop' : 'Start' }}</button>
+  <button (click)="scannerInstance.isStart ? stopScanner() : startScanner()">
+    {{ scannerInstance.isStart ? 'Parar Leitura' : 'Iniciar Câmera' }}</button>
 </div>
 
 
