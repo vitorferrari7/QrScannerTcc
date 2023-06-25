@@ -7,126 +7,184 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-
+  
   .content {
-    display: flex;
-    margin: 82px auto 32px;
-    padding: 0 16px;
-    max-width: 960px;
-    flex-direction: column;
-    align-items: center;
-  }
-  .result-container {
-  background-color: #ffffff;
+  display: flex;
+  margin: 82px auto 32px;
+  padding: 0 16px;
+  max-width: 960px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.result-container {
+  position: relative; /* Adiciona posição relativa para alinhar o link */
   padding: 10px;
   border-radius: 4px;
   margin-bottom: 10px;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ccc;
+  overflow: hidden;
 }
 
 .result-container a {
   color: #000000;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 12px;
   display: inline-block;
   border: 2px solid #000000;
   padding: 8px;
   border-radius: 4px;
+  margin-top: auto;
+}
+.qr-title {
+  font-size: medium;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
 }
 
+
 .result-link {
-  display: inline-block;
-  background-color: #333;
-  color: #ffffff;
-  padding: 8px;
-  border-radius: 4px;
-  text-decoration: none;
-  font-size: 16px;
-}
+    display: inline-block;
+    background-color: #333;
+    color: #ffffff;
+    padding: 8px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 16px;
+  }
 
 .result-link:hover {
   background-color: #555;
 }
 
 .header {
-  background-color: gray;
+  background-color: #333;
   padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .file-input {
-  width: 135px; /* Defina a largura desejada */
-  height: 36px; /* Defina a altura desejada */
-  border: none;
-  border-radius: 1px;
-  background-color: rgb(68, 68, 68);
-  padding: 6px 10px;
-  font-size: 30px;
-  color: black;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    width: 150px;
+    height: 40px;
+    margin-top: 10px;
+  }
+
+  .file-input input[type="file"] {
+    font-size: 0;
+    color: #fff;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .file-input::before {
+    content: 'Selecionar Arquivos';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: #3b3b3b;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px; 
+    white-space: nowrap; 
+    text-overflow: ellipsis; 
+    overflow: hidden; 
+    box-sizing: border-box;
+  }
+
+  .file-input:hover::before {
+    background-color: #555;
+  }
+
 
 .file-input:focus {
   outline: none;
-  box-shadow: 0 0 0 4px rgb(0, 0, 0); /* Defina um estilo de foco desejado */
+  box-shadow: 0 0 0 4px rgb(0, 0, 0);
 }
+
 .camera-button {
   background-color: #3b3b3b;
   color: #fff;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
+  margin-top: 10px;
 }
 
-  footer {
-    margin-top: 8px;
-    display: flex;
-    align-items: center;
-    line-height: 20px;
-  }
+footer {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  line-height: 20px;
+}
 
-  footer a {
-    display: flex;
-    align-items: center;
-  }
+footer a {
+  display: flex;
+  align-items: center;
+}
 
 </style>
-<div class = "header">
-   <div class = "file-input">
-<input #file type="file" (change)="onSelects(file.files)" [multiple]="'multiple'" [accept]="'.jpg, .png, .gif, .jpeg'"/>
+<div class="header">
+  <div class="file-input" *ngIf="!showCameraSection">
+    <input #file type="file" (change)="onSelects(file.files)" [multiple]="'multiple'" [accept]="'.jpg, .png, .gif, .jpeg'" />
+  </div>
+  <h1 class="qr-title">QR WYD</h1>
+  <button class="camera-button" (click)="toggleCameraSection()">
+    {{ showCameraSection ? 'Ocultar Câmera' : 'Ler por Câmera' }}
+  </button>
 </div>
-<button class ="camera-button" (click)="toggleCameraSection()">{{ showCameraSection ? 'Ocultar Câmera' : 'Ler por Câmera' }}</button>
-</div> 
 
 <div class="content" role="main">
   <div *ngFor="let item of qrCodeResult" class="result-container">
-    <img [src]="item.url | safe" [alt]="item.name" style="max-width: 100%">
+    <img [src]="item.url | safe" [alt]="item.name" style="max-width: 100%; width: 200px;">
     <a [href]="item.data[0].value" target="_blank" id="qrCodeLink">{{ item.data[0].value }}</a>
-    <button (click)="isStart ? stopScanner() : startScanner()">
-      {{ isStart ? 'Stop Scanner' : 'Start Scanner' }}
-    </button>
   </div>
-
-
-  <div class="camera-section" *ngIf="showCameraSection">
- <!-- For camera -->
-  <ngx-scanner-qrcode #scannerInstance></ngx-scanner-qrcode>
   
-<!--Result-->
-<div *ngIf="scannerInstance.data && scannerInstance.data.getValue().length > 0">
-  <a [href]="scannerInstance.data.getValue()[0].value" target="_blank" class="result-link">
-   <span> {{ scannerInstance.data.getValue()[0].value | json }} </span>
-  </a>
+  <div class="camera-section" *ngIf="showCameraSection">
+    <!-- For camera -->
+    <ngx-scanner-qrcode #scannerInstance></ngx-scanner-qrcode>
+
+    <!-- Result -->
+    <div *ngIf="scannerInstance.data && scannerInstance.data.getValue().length > 0">
+      <a [href]="scannerInstance.data.getValue()[0].value" target="_blank" class="result-link">
+        <span>{{ scannerInstance.data.getValue()[0].value | json }}</span>
+      </a>
+    </div>
+
+    <!-- Loading -->
+    <p *ngIf="scannerInstance.isLoading">⌛ Iniciando Câmera...</p>
+
+    <!-- start -->
+    <button class="camera-button" (click)="scannerInstance.isStart ? stopScanner() : startScanner()">
+      {{ scannerInstance.isStart ? 'Parar Leitura' : 'Iniciar Câmera' }}
+    </button>
+
+    <div class="row bottom-options">
+      <div>
+        <strong>Clique em Iniciar Câmera para ler o seu QR Code.</strong>
+      </div>
+    </div>
+  </div>
 </div>
-  <!-- Loading -->
-  <p *ngIf="scannerInstance.isLoading">⌛ Iniciando Câmera...</p>
-  <!-- start -->
-  <button (click)="scannerInstance.isStart ? stopScanner() : startScanner()">
-    {{ scannerInstance.isStart ? 'Parar Leitura' : 'Iniciar Câmera' }}</button>
-</div>
+
+
 
 
   

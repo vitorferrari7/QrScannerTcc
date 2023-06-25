@@ -34,7 +34,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.startScanner(); // Inicia o scanner quando o componente é inicializado
   }
-
+  
   ngAfterViewInit() {
     this.startScanner();
     setTimeout(() => {
@@ -77,6 +77,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   public handleQrCodeResult(result: ScannerQRCodeSelectedFiles) {
     this.qrCodeResult.push(result);
     this.cdr.detectChanges();
+    if (result.data && result.data.length > 0 && result.data[0]?.value) {
+      window.location.href = result.data[0].value; // Redirecionar automaticamente para o link do QR Code
+    }
   }
 }
 
